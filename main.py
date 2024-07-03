@@ -1,3 +1,7 @@
+# Wrapping up for the night. Got the basic get call working
+# Need to fix url checker, get it to take a full URL and filter out just the ID.
+# Then need to clean the json response, fill variables. Probably use a dictionary for this.
+
 import sys
 import requests
 
@@ -6,7 +10,8 @@ api_key = 'AIzaSyDEgOtAKuGUT7IZpQKxDUTfyOsM_xp5bqk'
 
 def main():
     url = getYoutubeURL()
-    unparsed_result = makeAPICall(url)
+    video_id = getVideoId(url)
+    # unparsed_result = makeAPICall(video_id)
 
 
 def getYoutubeURL() -> str:
@@ -19,7 +24,7 @@ def getYoutubeURL() -> str:
 
 
 def checkURLValidity(url) -> bool:
-    if url.isnumeric:
+    if url.isnumeric():
         return False
     elif url.strip() == "":
         return False
@@ -35,6 +40,10 @@ def printHeader():
     print("----------------------------------------------------------------------")
 
 
+def getVideoId(url):
+    # Need to take in the url and strip everything except the video ID. Probably using regex yeehaw!
+
+
 def makeAPICall(url) -> str:
     # response = requests.get(f'https://www.googleapis.com/youtube/v3/videos?part=snippet&id={url}&key={api_key}')
     response = requests.get(f'https://www.googleapis.com/youtube/v3/videos?part=statistics&id={url}&key={api_key}')
@@ -42,8 +51,8 @@ def makeAPICall(url) -> str:
 
 
 if __name__ == "__main__":
-    # main()
-    makeAPICall('jfKfPfyJRdk')
+    main()
+    # makeAPICall('jfKfPfyJRdk')
 
 
 # Black, mypy, pycheck?, pytest of course
