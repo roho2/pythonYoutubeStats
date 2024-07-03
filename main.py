@@ -4,15 +4,18 @@
 
 import sys
 import requests
+import pprint
 
-api_key = 'AIzaSyDEgOtAKuGUT7I   ZpQKxDUTfyOsM_xp5bqk'
+api_key = 'AIzaSyDEgOtAKuGUT   7IZpQKxDUTfyOsM_xp5bqk'
+
 
 # Video ID for lofi video: 'jfKfPfyJRdk'
 
 def main():
     url = getYoutubeURL()
     video_id = getVideoId(url)
-    # unparsed_result = makeAPICall(video_id)
+    unparsed_result = makeAPICall(video_id)
+    pprint.pprint(unparsed_result)
 
 
 def getYoutubeURL() -> str:
@@ -33,7 +36,7 @@ def checkURLValidity(url) -> bool:
         return True
 
 
-def printHeader():
+def printHeader() -> None:
     print("----------------------------------------------------------------------")
     print("-            Welcome to Python Youtube Statistics Fetcher            -")
     print("-                            Version 0.1                             -")
@@ -41,20 +44,26 @@ def printHeader():
     print("----------------------------------------------------------------------")
 
 
-def getVideoId(url):
-    # Need to take in the url and strip everything except the video ID. Probably using regex yeehaw!
+def getVideoId(url) -> str:
+    youtube, videoId = url.split('?v=')
+    return videoId
 
 
-def makeAPICall(url) -> str:
-    # response = requests.get(f'https://www.googleapis.com/youtube/v3/videos?part=snippet&id={url}&key={api_key}')
-    response = requests.get(f'https://www.googleapis.com/youtube/v3/videos?part=statistics&id={url}&key={api_key}')
-    print(response.json())
+def makeAPICall(video_id) -> str:
+    # Response1 has 'title', 'publishedAt' (in format 2024-06-30T19:00:26Z)
+    response1 = requests.get(f'https://www.googleapis.com/youtube/v3/videos?part=snippet&id={video_id}&key={api_key}')
+    # Response2 has a dict with key 'items[]'->'statistics{}'->'commentCount', 'favoriteCount', 'likeCount', 'viewCount'
+    response2 = requests.get(f'https://www.googleapis.com/youtube/v3/videos?part=statistics&id={video_id}&key={api_key}')
+    pprint.pprint(response2.json())
+    test = response2.json()
+    print(test['items'][0]['statistics']['likeCount'])
+    return response2.json()
 
 
 if __name__ == "__main__":
-    main()
+    makeAPICall('v44K0aRNFz8&t=983s')
+    # main()
     # makeAPICall('jfKfPfyJRdk')
-
 
 # Black, mypy, pycheck?, pytest of course
 # https://stackoverflow.com/questions/26199933/youtube-api-3-0-search-videos-and-get-video-statistics-at-single-request
