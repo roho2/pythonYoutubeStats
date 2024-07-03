@@ -1,5 +1,7 @@
 import sys
 
+api_key = 'AIzaSyDEgOtAKuGUT7IZpQKxDUTfyOsM_xp5bqk'
+
 
 def main():
     url = getYoutubeURL()
@@ -40,3 +42,4 @@ if __name__ == "__main__":
     main()
 
 # Black, mypy, pycheck?, pytest of course
+# https://stackoverflow.com/questions/26199933/youtube-api-3-0-search-videos-and-get-video-statistics-at-single-request
