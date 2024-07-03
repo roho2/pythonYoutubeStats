@@ -14,8 +14,8 @@ api_key = 'AIzaSyDEgOtAKuGUT   7IZpQKxDUTfyOsM_xp5bqk'
 def main():
     url = getYoutubeURL()
     video_id = getVideoId(url)
-    unparsed_result = makeAPICall(video_id)
-    pprint.pprint(unparsed_result)
+    title_response, statistics_response = makeAPICall(video_id)
+    info = getInfoFromResponses(title_response, statistics_response)
 
 
 def getYoutubeURL() -> str:
@@ -49,20 +49,26 @@ def getVideoId(url) -> str:
     return videoId
 
 
-def makeAPICall(video_id) -> str:
+def getInfoFromResponses(title_response, statistics_response) -> dict:
+    # We want to print Title, views, likes, dislikes (if possible), comment count, and favorite count.
+    info = {'title': title_response['items'][0]['snippet']['title'],
+            'views': statistics_response['items'][0]['statistics']['viewCount'],
+            'likes': statistics_response['items'][0]['statistics']['likeCount'],
+            'comments': statistics_response['items'][0]['statistics']['commentCount'],
+            'favorites': statistics_response['items'][0]['statistics']['favoriteCount']}
+    return info
+
+
+def makeAPICall(video_id) -> tuple[dict, dict]:
     # Response1 has 'title', 'publishedAt' (in format 2024-06-30T19:00:26Z)
-    response1 = requests.get(f'https://www.googleapis.com/youtube/v3/videos?part=snippet&id={video_id}&key={api_key}')
+    titleResponse = requests.get(f'https://www.googleapis.com/youtube/v3/videos?part=snippet&id={video_id}&key={api_key}')
     # Response2 has a dict with key 'items[]'->'statistics{}'->'commentCount', 'favoriteCount', 'likeCount', 'viewCount'
-    response2 = requests.get(f'https://www.googleapis.com/youtube/v3/videos?part=statistics&id={video_id}&key={api_key}')
-    pprint.pprint(response2.json())
-    test = response2.json()
-    print(test['items'][0]['statistics']['likeCount'])
-    return response2.json()
+    statistics = requests.get(f'https://www.googleapis.com/youtube/v3/videos?part=statistics&id={video_id}&key={api_key}')
+    return titleResponse.json(), statistics.json()
 
 
 if __name__ == "__main__":
-    makeAPICall('v44K0aRNFz8&t=983s')
-    # main()
+    main()
     # makeAPICall('jfKfPfyJRdk')
 
 # Black, mypy, pycheck?, pytest of course
