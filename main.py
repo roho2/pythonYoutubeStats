@@ -5,8 +5,9 @@
 import sys
 import requests
 
-api_key = 'AIzaSyDEgOtAKuGUT7IZpQKxDUTfyOsM_xp5bqk'
+api_key = 'AIzaSyDEgOtAKuGUT7I   ZpQKxDUTfyOsM_xp5bqk'
 
+# Video ID for lofi video: 'jfKfPfyJRdk'
 
 def main():
     url = getYoutubeURL()
