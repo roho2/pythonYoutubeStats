@@ -1,8 +1,7 @@
 import sys
 import requests
-import pprint
 
-api_key = 'AIzaSyDEgOtAKuGUT   7IZpQKxDUTfyOsM_xp5bqk'
+api_key = "AIzaSyDEgOtAKuGUT   7IZpQKxDUTfyOsM_xp5bqk"
 
 
 def main():
@@ -40,25 +39,31 @@ def printHeader() -> None:
 
 
 def getVideoId(url: str) -> str:
-    youtube, videoId = url.split('?v=')
+    youtube, videoId = url.split("?v=")
     return videoId
 
 
 def getInfoFromResponses(title_response: dict, statistics_response: dict) -> dict:
     # We want to print Title, views, likes, dislikes (if possible), comment count, and favorite count.
-    info = {'title': title_response['items'][0]['snippet']['title'],
-            'views': statistics_response['items'][0]['statistics']['viewCount'],
-            'likes': statistics_response['items'][0]['statistics']['likeCount'],
-            'comments': statistics_response['items'][0]['statistics']['commentCount'],
-            'favorites': statistics_response['items'][0]['statistics']['favoriteCount']}
+    info = {
+        "title": title_response["items"][0]["snippet"]["title"],
+        "views": statistics_response["items"][0]["statistics"]["viewCount"],
+        "likes": statistics_response["items"][0]["statistics"]["likeCount"],
+        "comments": statistics_response["items"][0]["statistics"]["commentCount"],
+        "favorites": statistics_response["items"][0]["statistics"]["favoriteCount"],
+    }
     return info
 
 
 def makeAPICall(video_id: str) -> tuple[dict, dict]:
     # 'title', 'publishedAt' (in format 2024-06-30T19:00:26Z)
-    titleResponse = requests.get(f'https://www.googleapis.com/youtube/v3/videos?part=snippet&id={video_id}&key={api_key}')
+    titleResponse = requests.get(
+        f"https://www.googleapis.com/youtube/v3/videos?part=snippet&id={video_id}&key={api_key}"
+    )
     # dict with key 'items[]'->'statistics{}'->'commentCount', 'favoriteCount', 'likeCount', 'viewCount'
-    statisticsResponse = requests.get(f'https://www.googleapis.com/youtube/v3/videos?part=statistics&id={video_id}&key={api_key}')
+    statisticsResponse = requests.get(
+        f"https://www.googleapis.com/youtube/v3/videos?part=statistics&id={video_id}&key={api_key}"
+    )
     return titleResponse.json(), statisticsResponse.json()
 
 
